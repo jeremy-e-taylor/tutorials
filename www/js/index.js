@@ -16,67 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event.
-    onDeviceReady: function()
-    {
-        alert("foo");
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://api.github.com/legacy/repos/search/javascript', true);
-        
-        /*
-         * function: onload
-         */
-        xhr.onload = function() {
-            alert("in onload");
-            var i;
-            alert("in onload 2");
-            var reposHTML = "";
-            alert("in onload 3");
-            var repos = JSON.parse(xhr.responseText);
-            alert("in onload 4");
-            for(i = 0; i < repos.repositories.length; i++) {
-                reposHTML += "<p><a href='https://github.com/" + repos.repositories[i].username + "/" + repos.repositories[i].name + "'>" + repos.repositories[i].name + "</a><br>" + repos.repositories[i].description + "</p>";
-            }
-            alert("finished for loop");
-            document.getElementById("allRepos").innerHTML = reposHTML;
-        };
-        
-        /*
-         * function: onerror
-         */
-        xhr.onerror = function() {
-            alert('Error making the request.');
-        };
-        
-        xhr.send();
-            
-    },
-    
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+$('#reposHome').bind('pageinit', function(event) {
+    loadRepos();
+});
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
-    }
-};
+function loadRepos() {
+    $.ajax("https://api.github.com/legacy/repos/search/javascript").done(function(data) {
+        var i, repo;
+        $.each(data.repositories, function(i, repo) {
+            $("#allRepos").append("<li><a href='https://github.com/" + repo.username + "/" + repo.name + "'>" + "<h4>" + repo.name + "</h4>" + "<p>" + repo.username + "</p></a></li>");
+        });
+        $('#allRepos').listview('refresh');
+    });
+}

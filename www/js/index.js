@@ -21,6 +21,7 @@ var app = {
     initialize: function() {
         this.bindEvents();
     },
+    
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
@@ -28,13 +29,38 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
+    
     // deviceready Event Handler
     //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicity call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
+    // The scope of 'this' is the event.
+    onDeviceReady: function()
+    {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://api.github.com/legacy/repos/search/javascript', true);
+        
+        /*
+         * function: onload
+         */
+        xhr.onload = function() {
+            var repos = JSON.parse(xhr.response), i, reposHTML = "";
+            for(i = 0; i < repos.repositories.length; i++) {
+                reposHTML += "<p><a href='https://github.com/" + repos.repositories[i].username + "/" + repos.repositories[i].name + "'>" + repos.repositories[i].name + "</a><br>" + repos.repositories[i].description + "</p>";
+            }
+            
+            document.getElementById("allRepos").innerHTML = reposHTML;
+        };
+        
+        /*
+         * function: onerror
+         */
+        xhr.onerror = function() {
+            alert('Error making the request.');
+        };
+        
+        xhr.send();
+            
     },
+    
     // Update DOM on a Received Event
     receivedEvent: function(id) {
         var parentElement = document.getElementById(id);

@@ -35,6 +35,7 @@ var app = {
     // The scope of 'this' is the event.
     onDeviceReady: function()
     {
+        alert("foo");
         var xhr = new XMLHttpRequest();
         xhr.open('GET', 'https://api.github.com/legacy/repos/search/javascript', true);
         

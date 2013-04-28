@@ -45,6 +45,7 @@ var app = {
         xhr.onload = function() {
             alert("in onload");
             var repos = JSON.parse(xhr.response), i, reposHTML = "";
+            alert("in onload 2");
             for(i = 0; i < repos.repositories.length; i++) {
                 reposHTML += "<p><a href='https://github.com/" + repos.repositories[i].username + "/" + repos.repositories[i].name + "'>" + repos.repositories[i].name + "</a><br>" + repos.repositories[i].description + "</p>";
             }
